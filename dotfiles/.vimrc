@@ -1,3 +1,5 @@
+set clipboard=unnamed
+
 " Terminal settings
 :set splitbelow
 :set termwinsize=10x0
@@ -10,8 +12,11 @@
 :set smartcase
 :set noswapfile
 :set nobackup
-:set tabstop=4 softtabstop=4
+:set tabstop=4
 :set shiftwidth=4
+:set expandtab
+":set tabstop=4 softtabstop=4
+":set shiftwidth=4
 :set incsearch
 :set nu
 
@@ -28,9 +33,9 @@ let g:NERDTreeWinPos = "left"
 au VimEnter *  NERDTree
 
 " Color Theme
-syntax on
-colorscheme gruvbox
-:set background=dark
+" syntax on
+" colorscheme gruvbox
+" :set background=dark
 
 " Cursor Settings
 let &t_SI.="\e[5 q" "SI = INSERT mode
@@ -49,6 +54,9 @@ let g:go_fmt_command = "goimports"
 
 " Automatically highlight variable your cursor is on
 let g:go_auto_sameids = 0
+
+" Scala
+let g:scala_scaladoc_indent = 1
 
 "---------------------------------------------------------------------------------------------------
 
@@ -84,6 +92,18 @@ Plug 'thosakwe/vim-flutter'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'dart-lang/dart-vim-plugin'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+autocmd FileType json syntax match Comment +\/\/.\+$+
 Plug 'vimwiki/vimwiki'
+Plug 'derekwyatt/vim-scala'
+" Plug 'scalameta/coc-metals', {'do': 'yarn install --frozen-lockfile'}
+Plug 'pangloss/vim-javascript'
+Plug 'leafgarland/typescript-vim'
+Plug 'maxmellon/vim-jsx-pretty'
+Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+let g:prettier#autoformat = 0
+autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html PrettierAsync
 
 call plug#end()
+
+" Shortcuts
+map <C-n> :NERDTreeToggle<CR>
