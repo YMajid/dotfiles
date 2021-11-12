@@ -14,11 +14,12 @@ set clipboard=unnamed
 :set nobackup
 :set tabstop=4
 :set shiftwidth=4
+:set softtabstop=4
 :set expandtab
-":set tabstop=4 softtabstop=4
-":set shiftwidth=4
 :set incsearch
 :set nu
+:set clipboard=unnamedplus
+:set encoding=utf-8
 
 " Vimwiki settings
 set nocompatible
@@ -31,11 +32,6 @@ let g:plugWinPos = "right"
 " NerdTree Settings
 let g:NERDTreeWinPos = "left"
 au VimEnter *  NERDTree
-
-" Color Theme
-" syntax on
-" colorscheme gruvbox
-" :set background=dark
 
 " Cursor Settings
 let &t_SI.="\e[5 q" "SI = INSERT mode
@@ -55,8 +51,14 @@ let g:go_fmt_command = "goimports"
 " Automatically highlight variable your cursor is on
 let g:go_auto_sameids = 0
 
+" Remove all trailing whitespace
+autocmd BufWritePre * :%s/\s\+$//e
+
 " Scala
 let g:scala_scaladoc_indent = 1
+
+" Golang
+au filetype go inoremap <buffer> . .<C-x><C-o>
 
 "---------------------------------------------------------------------------------------------------
 
@@ -73,17 +75,17 @@ inoremap <silent><expr> <TAB>
 
 "---------------------------------------------------------------------------------------------------
 
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-	\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
+" if empty(glob('~/.vim/autoload/plug.vim'))
+"   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+" 	\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+"   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+" endif
 
 
 call plug#begin('~/.vim/plugged')
 
 Plug 'vim-pandoc/vim-pandoc-syntax'
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' } 
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'morhetz/gruvbox'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'scrooloose/nerdcommenter'
@@ -92,18 +94,31 @@ Plug 'thosakwe/vim-flutter'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'dart-lang/dart-vim-plugin'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-autocmd FileType json syntax match Comment +\/\/.\+$+
 Plug 'vimwiki/vimwiki'
 Plug 'derekwyatt/vim-scala'
-" Plug 'scalameta/coc-metals', {'do': 'yarn install --frozen-lockfile'}
 Plug 'pangloss/vim-javascript'
 Plug 'leafgarland/typescript-vim'
 Plug 'maxmellon/vim-jsx-pretty'
-Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
-let g:prettier#autoformat = 0
-autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html PrettierAsync
+Plug 'google/vim-maktaba'
+Plug 'google/vim-codefmt'
+Plug 'google/vim-glaive'
+autocmd FileType json syntax match Comment +\/\/.\+$+
 
 call plug#end()
 
 " Shortcuts
 map <C-n> :NERDTreeToggle<CR>
+
+" Autoformatting
+augroup autoformat_settings
+  autocmd FileType bzl AutoFormatBuffer buildifier
+  autocmd FileType c,cpp,proto,javascript,arduino AutoFormatBuffer clang-format
+  autocmd FileType dart AutoFormatBuffer dartfmt
+  autocmd FileType go AutoFormatBuffer gofmt
+  autocmd FileType gn AutoFormatBuffer gn
+  autocmd FileType html,css,sass,scss,less,json AutoFormatBuffer js-beautify
+  autocmd FileType java AutoFormatBuffer google-java-format
+  autocmd FileType python AutoFormatBuffer yapf
+  autocmd FileType rust AutoFormatBuffer rustfmt
+  autocmd FileType vue AutoFormatBuffer prettier
+augroup END
